@@ -27,7 +27,7 @@ on:
         description: Name of the key pair for SSH access
         required: true
       stack_name:
-        description: Name of the key pair for SSH access
+        description: Name of the CloudFormation stack
         default: ec2-mac
 
 jobs:
