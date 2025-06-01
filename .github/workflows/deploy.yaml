@@ -4,13 +4,13 @@ on:
     inputs:
       instance_type:
         description: Instance type for the EC2 instance
-        required: true
+        default: mac2.metal
       instance_name:
         description: Name tag for the EC2 instance
         required: true
       image_id:
         description: AMI ID for the EC2 instance
-        required: true
+        default: ami-00171e83b9ddc38bd # macOS Sequoia 15.4.1
       region:
         description: AWS region for the dedicated host
         required: true
