@@ -42,7 +42,7 @@ https://aws.amazon.com/de/ec2/instance-types/mac/
 2. Connect to the instance:
 
    ```shell
-   ssh -i my-keypair.pem ec2-user@<my-instance-hostname>.eu-west-1.compute.amazonaws.com
+   ssh -i my-keypair.pem ec2-user@<my-instance-hostname>.<region>.compute.amazonaws.com
    ```
 
 ### VNC access
@@ -63,7 +63,7 @@ https://aws.amazon.com/de/ec2/instance-types/mac/
 3. Open SSH tunnel
 
    ```shell
-   ssh -i my-keypair.pem -L 5900:localhost:5900 ec2-user@<my-instance-hostname>.eu-west-1.compute.amazonaws.com
+   ssh -i my-keypair.pem -L 5900:localhost:5900 ec2-user@<my-instance-hostname>.<region>.compute.amazonaws.com
    ```
 
 4. Connect to VNC
