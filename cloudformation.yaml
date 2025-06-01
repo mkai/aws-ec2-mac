@@ -1,0 +1,59 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to launch EC2 instance on dedicated host
+
+Parameters:
+  InstanceType:
+    Type: String
+    Description: Instance type for the EC2 instance
+  InstanceName:
+    Type: String
+    Description: Name tag for the EC2 instance
+  ImageId:
+    Type: String
+    Description: AMI ID for the EC2 instance
+  AvailabilityZone:
+    Type: String
+    Description: Availability zone for the dedicated host
+  VpcId:
+    Type: String
+    Description: ID of the VPC where the instance will run
+  SubnetId:
+    Type: String
+    Description: ID of the subnet where the instance will run
+  KeyName:
+    Type: String
+    Description: Name of the key pair for SSH access
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub "${InstanceName}-sg"
+      GroupDescription: !Sub "Security group for ${InstanceName}"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  DedicatedHost:
+    Type: AWS::EC2::Host
+    Properties:
+      InstanceType: !Ref InstanceType
+      AvailabilityZone: !Ref AvailabilityZone
+
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      HostId: !Ref DedicatedHost
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SecurityGroupIds:
+        - !GetAtt SecurityGroup.GroupId
+      SubnetId: !Ref SubnetId
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName

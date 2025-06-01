@@ -1,0 +1,57 @@
+name: Deployment
+on:
+  workflow_dispatch:
+    inputs:
+      instance_type:
+        description: Instance type for the EC2 instance
+        required: true
+      instance_name:
+        description: Name tag for the EC2 instance
+        required: true
+      image_id:
+        description: AMI ID for the EC2 instance
+        required: true
+      region:
+        description: AWS region for the dedicated host
+        required: true
+      az:
+        description: Availability zone for the dedicated host
+        required: true
+      vpc_id:
+        description: ID of the VPC where the instance will run
+        required: true
+      subnet_id:
+        description: ID of the subnet where the instance will run
+        required: true
+      key_name:
+        description: Name of the key pair for SSH access
+        required: true
+      stack_name:
+        description: Name of the key pair for SSH access
+        default: ec2-mac
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy CloudFormation stack
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ inputs.stack_name }}
+          template: ./cloudformation.yaml
+          parameter-overrides: >-
+            InstanceType=${{ inputs.instance_type }},
+            InstanceName=${{ inputs.instance_name }},
+            ImageId=${{ inputs.image_id }},
+            AvailabilityZone=${{ inputs.az }},
+            VpcId=${{ inputs.vpc_id }},
+            SubnetId=${{ inputs.subnet_id }},
+            KeyName=${{ inputs.key_name }}
+          no-fail-on-empty-changeset: "1"
+        env:
+          AWS_REGION: ${{ inputs.region }}
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
